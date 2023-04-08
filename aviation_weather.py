@@ -1,6 +1,6 @@
 import streamlit as st
 import urllib.request
-from bs4 import BeautifulSoup
+import re
 
 # Define page title and favicon
 st.set_page_config(page_title="My Streamlit Website", page_icon=":airplane:")
@@ -11,9 +11,14 @@ def fetch_weather_data(airport_code):
     url = f"https://www.aviationweather.gov/metar/data?ids={airport_code}&format=raw&hours=0&taf=off&layout=off&date=0"
     with urllib.request.urlopen(url) as response:
         html = response.read().decode()
-    soup = BeautifulSoup(html, "html.parser")
-    weather_data = soup.find("code").string.strip()
-    return weather_data
+    # Find the first instance of the weather data string
+    start_index = html.find(f"{airport_code} ")
+    if start_index != -1:
+        # Remove any newlines and carriage returns from the weather data string
+        weather_data = html[start_index:].split("<br>")[0].replace("\n", "").replace("\r", "")
+        return weather_data
+    else:
+        return None
 
 # Define user interface components
 st.write("""
@@ -25,7 +30,7 @@ if airport_code:
     try:
         weather_data = fetch_weather_data(airport_code)
 
-        if len(weather_data) > 0:
+        if weather_data is not None:
             st.write(f"""
                      ## Latest Aviation Weather at {airport_code}
                      """)
