@@ -1,7 +1,7 @@
 import streamlit as st
 import urllib.request
 import re
-
+import string
 # Define page title and favicon
 st.set_page_config(page_title="Aviation Weather App", page_icon=":airplane:")
 
@@ -27,6 +27,9 @@ st.write("""
          """)
 
 airport_code = st.text_input("Enter an airport code:")
+if any(char in string.ascii_lowercase for char in airport_code):
+    # Convert all lowercase letters to uppercase
+    airport_code = text.upper()
 if airport_code:
     try:
         weather_data = fetch_weather_data(airport_code)
