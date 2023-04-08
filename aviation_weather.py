@@ -1,7 +1,6 @@
 import streamlit as st
-from avwx import Metar, Station
-from avwx.exceptions import InvalidRequest
-from avwx.token import Token
+import urllib.request
+import re
 
 # Define page title and favicon
 st.set_page_config(page_title="My Streamlit Website", page_icon=":airplane:")
@@ -9,9 +8,10 @@ st.set_page_config(page_title="My Streamlit Website", page_icon=":airplane:")
 # Define functions to fetch aviation weather data
 @st.cache
 def fetch_weather_data(airport_code):
-    station = Station.from_icao(airport_code)
-    report = Metar(station, Token()).report
-    return report.raw
+    url = f"https://www.aviationweather.gov/metar/data?ids={airport_code}&format=raw&hours=0&taf=off&layout=off&date=0"
+    with urllib.request.urlopen(url) as response:
+        html = response.read().decode()
+    return re.search(f"({airport_code}.+?)<br>", html).group(1)
 
 # Define user interface components
 st.write("""
@@ -30,5 +30,5 @@ if airport_code:
             st.write(weather_data)
         else:
             st.warning("No weather data found for the given airport code.")
-    except InvalidRequest as e:
-        st.warning(str(e))
+    except:
+        st.warning("Invalid airport code.")
