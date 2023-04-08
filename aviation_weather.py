@@ -14,8 +14,8 @@ def fetch_weather_data(airport_code):
     # Find the first instance of the weather data string
     start_index = html.find(f"{airport_code} ")
     if start_index != -1:
-        # Remove any newlines and carriage returns from the weather data string
-        weather_data = html[start_index:].split("<br>")[0].replace("\n", "").replace("\r", "")
+        # Remove any HTML tags and newlines from the weather data string
+        weather_data = re.sub("<.*?>", "", html[start_index:].split("<br>")[0]).replace("\n", "")
         return weather_data
     else:
         return None
