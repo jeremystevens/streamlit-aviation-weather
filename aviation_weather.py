@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import aviationweather as aw
+import metar
 
 # Define page title and favicon
 st.set_page_config(page_title="My Streamlit Website", page_icon=":airplane:")
@@ -22,11 +22,15 @@ if airport_code:
     weather_data = fetch_weather_data(airport_code)
 
     if len(weather_data) > 0:
-        decoded_data = aw.decode_metar(weather_data)
+        decoded_data = metar.parse(weather_data.decode())
         st.write(f"""
                  ## Latest Aviation Weather at {airport_code}
                  """)
-        st.write(decoded_data.summary)
-        st.write(decoded_data.conditions)
+        st.write(f"Report time: {decoded_data.time}")
+        st.write(f"Station: {decoded_data.station}")
+        st.write(f"Temperature: {decoded_data.temperature_c}°C / {decoded_data.temperature_f}°F")
+        st.write(f"Dew point: {decoded_data.dewpoint_c}°C / {decoded_data.dewpoint_f}°F")
+        st.write(f"Visibility: {decoded_data.visibility_km} km / {decoded_data.visibility_mi} mi")
+        st.write(f"Wind: {decoded_data.wind_speed_kt} kt, direction {decoded_data.wind_direction}")
     else:
         st.warning("No weather data found for the given airport code.")
