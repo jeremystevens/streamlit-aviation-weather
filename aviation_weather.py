@@ -29,7 +29,7 @@ st.write("""
 airport_code = st.text_input("Enter an airport code:")
 if any(char in string.ascii_lowercase for char in airport_code):
     # Convert all lowercase letters to uppercase
-    airport_code = text.upper()
+    airport_code = airport_code.upper()
 if airport_code:
     try:
         weather_data = fetch_weather_data(airport_code)
