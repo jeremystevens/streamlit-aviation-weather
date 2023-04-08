@@ -3,7 +3,7 @@ import urllib.request
 import re
 
 # Define page title and favicon
-st.set_page_config(page_title="My Streamlit Website", page_icon=":airplane:")
+st.set_page_config(page_title="Aviation Weather App", page_icon=":airplane:")
 
 # Define functions to fetch aviation weather data
 @st.cache
